@@ -60,10 +60,7 @@ The `deployer/deploy-to-vmm.sh` script handles the full CVM app deployment:
 | `MEMORY` | ❌ | Memory size (default: `2G`) |
 | `DISK` | ❌ | Disk size (default: `20G`) |
 | `NET_MODE` | ❌ | Networking mode: `user` (default) or `bridge` |
-
-## TODO
-
-- [ ] Support app CVM ↔ host port binding
+| `PORT_MAP` | ❌ | Space-separated port mappings between CVM and host (format: `protocol[:address]:host_port:vm_port`) |
 
 ## Generated files
 

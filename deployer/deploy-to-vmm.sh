@@ -54,6 +54,11 @@ DISK=20G
 
 # Networking mode: "user" (default) or "bridge"
 # NET_MODE=user
+
+# Port mappings from host to CVM (space-separated)
+# Format: protocol[:address]:host_port:vm_port
+# Example: PORT_MAP="tcp:0.0.0.0:8080:80 tcp:127.0.0.1:9443:443"
+# PORT_MAP=
 EOF
   echo "Please edit the .env file and set the required variables, then run this script again."
   exit 1
@@ -160,6 +165,9 @@ echo "  OS_IMAGE: ${OS_IMAGE:-dstack-0.5.6}"
 echo "  VCPU: ${VCPU:-2}"
 echo "  MEMORY: ${MEMORY:-2G}"
 echo "  DISK: ${DISK:-20G}"
+if [ -n "$PORT_MAP" ]; then
+  echo "  PORT_MAP: $PORT_MAP"
+fi
 if [ -n "$NET_MODE" ]; then
   echo "  NET_MODE: $NET_MODE"
 fi
@@ -195,6 +203,12 @@ fi
 
 if [ -n "$GUEST_AGENT_ADDR" ]; then
   DEPLOY_ARGS+=(--port "tcp:$GUEST_AGENT_ADDR:8090")
+fi
+
+if [ -n "$PORT_MAP" ]; then
+  for pm in $PORT_MAP; do
+    DEPLOY_ARGS+=(--port "$pm")
+  done
 fi
 
 if [ -n "$NET_MODE" ]; then
