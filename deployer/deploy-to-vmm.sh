@@ -51,6 +51,9 @@ MEMORY=2G
 
 # Disk size
 DISK=20G
+
+# Networking mode: "user" (default) or "bridge"
+# NET_MODE=user
 EOF
   echo "Please edit the .env file and set the required variables, then run this script again."
   exit 1
@@ -157,6 +160,9 @@ echo "  OS_IMAGE: ${OS_IMAGE:-dstack-0.5.6}"
 echo "  VCPU: ${VCPU:-2}"
 echo "  MEMORY: ${MEMORY:-2G}"
 echo "  DISK: ${DISK:-20G}"
+if [ -n "$NET_MODE" ]; then
+  echo "  NET_MODE: $NET_MODE"
+fi
 echo ""
 
 if [ -t 0 ]; then
@@ -189,6 +195,10 @@ fi
 
 if [ -n "$GUEST_AGENT_ADDR" ]; then
   DEPLOY_ARGS+=(--port "tcp:$GUEST_AGENT_ADDR:8090")
+fi
+
+if [ -n "$NET_MODE" ]; then
+  DEPLOY_ARGS+=(--net "$NET_MODE")
 fi
 
 $CLI deploy "${DEPLOY_ARGS[@]}"
