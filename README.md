@@ -56,6 +56,7 @@ The `deployer/deploy-to-vmm.sh` script handles the full CVM app deployment:
 | `DOCKER_REGISTRY` | ❌ | Docker registry URL (e.g. `docker-regis.iex.ec`). Required if `DOCKER_TOKEN` is set |
 | `DOCKER_USER` | ❌ | Docker registry username. Required if `DOCKER_TOKEN` is set |
 | `DOCKER_TOKEN` | ❌ | Docker registry token. All three `DOCKER_*` variables must be set to pull from a private registry |
+| `CLOUDFLARE_API_TOKEN` | ❌ | Cloudflare API token for DNS-01 challenge (used by `dstack-ingress` for Let's Encrypt certificates) |
 | `VCPU` | ❌ | Number of vCPUs (default: `2`) |
 | `MEMORY` | ❌ | Memory size (default: `2G`) |
 | `DISK` | ❌ | Disk size (default: `20G`) |

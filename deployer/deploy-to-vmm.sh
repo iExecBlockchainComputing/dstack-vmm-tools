@@ -23,7 +23,7 @@ APP_NAME=
 VMM_RPC=http://127.0.0.1:9080
 
 # KMS URL (the KMS must be running and accessible)
-KMS_URL=https://kms.ovh-tdx-dev.noxconfidential.dev:9201
+KMS_URL=https://kms.ovh-tdx-dev.noxprotocol.dev:9201
 
 # App ID (from on-chain governance: npx hardhat kms:create-app)
 # APP_ID=
@@ -39,6 +39,9 @@ KMS_URL=https://kms.ovh-tdx-dev.noxconfidential.dev:9201
 
 # The token used to launch the App
 APP_LAUNCH_TOKEN=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+
+# Cloudflare API token for DNS challenge
+# CLOUDFLARE_API_TOKEN=
 
 # dstack OS image name
 OS_IMAGE=dstack-0.5.6
@@ -92,6 +95,10 @@ if [ -n "$DOCKER_TOKEN" ] || [ -n "$DOCKER_REGISTRY" ] || [ -n "$DOCKER_USER" ];
   echo "DOCKER_REGISTRY=$DOCKER_REGISTRY" >> .app_env
   echo "DOCKER_USER=$DOCKER_USER" >> .app_env
   echo "DOCKER_TOKEN=$DOCKER_TOKEN" >> .app_env
+fi
+
+if [ -n "$CLOUDFLARE_API_TOKEN" ]; then
+  echo "CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN" >> .app_env
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
