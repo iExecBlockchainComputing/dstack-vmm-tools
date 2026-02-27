@@ -1,6 +1,6 @@
 # dstack-vmm-tools
 
-CLI tools for deploying Confidential VMs (CVMs) on [dstack-vmm](https://github.com/aspect-build/dstack).
+CLI tools for deploying and monitoring Confidential VMs (CVMs) on [dstack-vmm](https://github.com/aspect-build/dstack).
 
 ## Prerequisites
 
@@ -9,7 +9,19 @@ CLI tools for deploying Confidential VMs (CVMs) on [dstack-vmm](https://github.c
 - A running `dstack-vmm` instance
 - A running `dstack-kms` instance
 
-## Quick start
+## Tools
+
+### `deployer.sh` — Deploy a CVM
+
+Handles the full CVM app deployment:
+
+1. Loads configuration from `.env` (creates a template on first run)
+2. Generates a pre-launch script (token verification + optional Docker login)
+3. Builds `app-compose.json` from your `docker-compose.yaml`
+4. Injects `launch_token_hash` for security verification
+5. Deploys the CVM to dstack-vmm
+
+#### Quick start
 
 ```bash
 # 1. Create your app directory with a docker-compose.yaml
@@ -32,41 +44,50 @@ vim .env
 /path/to/dstack-vmm-tools/deployer.sh
 ```
 
-## Deployment workflow
-
-The `deployer.sh` script handles the full CVM app deployment:
-
-1. Loads configuration from `.env` (creates a template on first run)
-2. Generates a pre-launch script (token verification + optional Docker login)
-3. Builds `app-compose.json` from your `docker-compose.yaml`
-4. Injects `launch_token_hash` for security verification
-5. Deploys the CVM to dstack-vmm
-
-## Environment variables
+#### Environment variables
 
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `APP_NAME` | ✅ | Name of the app |
+| `APP_ID` | ✅ | App ID. For on-chain governance: the app smart contract address. For off-chain: a random hex string (e.g. `openssl rand -hex 20`) |
 | `VMM_RPC` | ✅ | URL of the dstack-vmm RPC service |
 | `KMS_URL` | ✅ | URL of the KMS service |
 | `OS_IMAGE` | ✅ | dstack OS image name (e.g. `dstack-0.5.6`) |
 | `APP_LAUNCH_TOKEN` | ✅ | Token for app launch verification (auto-generated in template) |
-| `APP_ID` | ✅ | App ID for identification. For on-chain governance: the app smart contract address. For off-chain governance: a random hex string (e.g. `openssl rand -hex 20`) |
 | `GUEST_AGENT_ADDR` | ❌ | Host address for guest agent (e.g. `127.0.0.1:9205`) |
-| `DOCKER_REGISTRY` | ❌ | Docker registry URL (e.g. `docker-regis.iex.ec`). Required if `DOCKER_TOKEN` is set |
-| `DOCKER_USER` | ❌ | Docker registry username. Required if `DOCKER_TOKEN` is set |
-| `DOCKER_TOKEN` | ❌ | Docker registry token. All three `DOCKER_*` variables must be set to pull from a private registry |
-| `CLOUDFLARE_API_TOKEN` | ❌ | Cloudflare API token for DNS-01 challenge (used by `dstack-ingress` for Let's Encrypt certificates) |
+| `DOCKER_REGISTRY` | ❌ | Docker registry URL (e.g. `docker-regis.iex.ec`). All three `DOCKER_*` must be set together |
+| `DOCKER_USER` | ❌ | Docker registry username |
+| `DOCKER_TOKEN` | ❌ | Docker registry token |
+| `CLOUDFLARE_API_TOKEN` | ❌ | Cloudflare API token for DNS-01 challenge (used by `dstack-ingress`) |
 | `VCPU` | ❌ | Number of vCPUs (default: `2`) |
 | `MEMORY` | ❌ | Memory size (default: `2G`) |
 | `DISK` | ❌ | Disk size (default: `20G`) |
 | `NET_MODE` | ❌ | Networking mode: `user` (default) or `bridge` |
-| `PORT_MAP` | ❌ | Space-separated port mappings between CVM and host (format: `protocol[:address]:host_port:vm_port`) |
+| `PORT_MAP` | ❌ | Space-separated port mappings (format: `protocol[:address]:host_port:vm_port`) |
 
-## Generated files
+#### Generated files
 
 | File | Description |
 |------|-------------|
 | `.env` | Configuration template (created on first run) |
 | `.app_env` | Environment secrets injected into the CVM |
 | `.app-compose.json` | App compose manifest sent to dstack-vmm |
+
+### `monitor.sh` — Stream CVM logs
+
+Streams logs from a running CVM container via the Gateway:
+
+```bash
+./dstack-vmm-tools/monitor.sh \
+  --app-id 4139fa786b4e210cecbb37d62d86552fc659fbc8 \
+  --agent-port 8090 \
+  --gateway-url apps.ovh-tdx-dev.noxprotocol.dev \
+  --container nox-kms
+```
+
+| Option | Required | Description |
+|--------|----------|-------------|
+| `--app-id` | ✅ | App ID of the CVM |
+| `--agent-port` | ✅ | Guest agent port |
+| `--gateway-url` | ✅ | Gateway base URL (e.g. `apps.ovh-tdx-dev.noxprotocol.dev`) |
+| `--container` | ✅ | Container name to fetch logs from |
