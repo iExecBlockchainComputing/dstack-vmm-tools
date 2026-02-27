@@ -25,8 +25,10 @@ VMM_RPC=http://127.0.0.1:9080
 # KMS URL (the KMS must be running and accessible)
 KMS_URL=https://kms.ovh-tdx-dev.noxprotocol.dev:9201
 
-# App ID (from on-chain governance: npx hardhat kms:create-app)
-# APP_ID=
+# App ID (required)
+# For on-chain governance: assign the address of the app smart contract
+# For off-chain governance: assign a random hex string, e.g.: openssl rand -hex 20
+APP_ID=
 
 
 # The address of the guest agent service listening on Host machine (optional)
@@ -71,6 +73,7 @@ required_env_vars=(
   "APP_NAME"
   "VMM_RPC"
   "KMS_URL"
+  "APP_ID"
   "OS_IMAGE"
   "APP_LAUNCH_TOKEN"
 )
@@ -159,9 +162,7 @@ echo "Configuration:"
 echo "  APP_NAME: $APP_NAME"
 echo "  VMM_RPC: $VMM_RPC"
 echo "  KMS_URL: $KMS_URL"
-if [ -n "$APP_ID" ]; then
-  echo "  APP_ID: $APP_ID"
-fi
+echo "  APP_ID: $APP_ID"
 if [ -n "$APP_ADDR" ]; then
   echo "  APP_ADDR: $APP_ADDR"
 fi
@@ -203,10 +204,7 @@ DEPLOY_ARGS=(
   --disk "${DISK:-20G}"
 )
 
-# App ID is optional — needed for on-chain governance
-if [ -n "$APP_ID" ]; then
-  DEPLOY_ARGS+=(--app-id "$APP_ID")
-fi
+DEPLOY_ARGS+=(--app-id "$APP_ID")
 
 if [ -n "$GUEST_AGENT_ADDR" ]; then
   DEPLOY_ARGS+=(--port "tcp:$GUEST_AGENT_ADDR:8090")

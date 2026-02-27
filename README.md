@@ -51,7 +51,7 @@ The `deployer/deploy-to-vmm.sh` script handles the full CVM app deployment:
 | `KMS_URL` | ✅ | URL of the KMS service |
 | `OS_IMAGE` | ✅ | dstack OS image name (e.g. `dstack-0.5.6`) |
 | `APP_LAUNCH_TOKEN` | ✅ | Token for app launch verification (auto-generated in template) |
-| `APP_ID` | ❌ | App ID for identification. If not set, a random ID is derived from the compose hash — set it explicitly if you need a stable ID |
+| `APP_ID` | ✅ | App ID for identification. For on-chain governance: the app smart contract address. For off-chain governance: a random hex string (e.g. `openssl rand -hex 20`) |
 | `GUEST_AGENT_ADDR` | ❌ | Host address for guest agent (e.g. `127.0.0.1:9205`) |
 | `DOCKER_REGISTRY` | ❌ | Docker registry URL (e.g. `docker-regis.iex.ec`). Required if `DOCKER_TOKEN` is set |
 | `DOCKER_USER` | ❌ | Docker registry username. Required if `DOCKER_TOKEN` is set |
