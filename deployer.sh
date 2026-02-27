@@ -105,7 +105,7 @@ if [ -n "$CLOUDFLARE_API_TOKEN" ]; then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CLI="$SCRIPT_DIR/../vmm-cli.py --url $VMM_RPC"
+CLI="$SCRIPT_DIR/vmm-cli.py --url $VMM_RPC"
 
 EXPECTED_TOKEN_HASH=$(echo -n "$APP_LAUNCH_TOKEN" | sha256sum | cut -d' ' -f1)
 

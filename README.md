@@ -23,18 +23,18 @@ services:
 EOF
 
 # 2. Run the deploy script (first run creates a .env template)
-/path/to/dstack-vmm-tools/deployer/deploy-to-vmm.sh
+/path/to/dstack-vmm-tools/deployer.sh
 
 # 3. Edit the generated .env file with your values
 vim .env
 
 # 4. Run the deploy script again
-/path/to/dstack-vmm-tools/deployer/deploy-to-vmm.sh
+/path/to/dstack-vmm-tools/deployer.sh
 ```
 
 ## Deployment workflow
 
-The `deployer/deploy-to-vmm.sh` script handles the full CVM app deployment:
+The `deployer.sh` script handles the full CVM app deployment:
 
 1. Loads configuration from `.env` (creates a template on first run)
 2. Generates a pre-launch script (token verification + optional Docker login)
