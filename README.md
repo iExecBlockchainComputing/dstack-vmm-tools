@@ -91,3 +91,56 @@ Streams logs from a running CVM container via the Gateway:
 | `--agent-port` | ✅ | Guest agent port |
 | `--gateway-url` | ✅ | Gateway base URL (e.g. `apps.ovh-tdx-dev.noxprotocol.dev`) |
 | `--container` | ✅ | Container name to fetch logs from |
+
+---
+
+## Systemd services
+
+Scripts to install dstack components as persistent systemd services, so they survive SSH session disconnects and auto-restart on failure.
+
+### `install-vmm-service.sh` — Install dstack-vmm as a service
+
+Creates and enables a `dstack-vmm` systemd service.
+
+```bash
+sudo ./dstack-vmm-tools/install-vmm-service.sh
+sudo systemctl start dstack-vmm
+```
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DSTACK_DIR` | `/opt/dstack` | Directory containing `dstack-vmm` binary and `vmm.toml` |
+
+Expects `dstack-vmm` and `vmm.toml` to be in `DSTACK_DIR`.
+
+### `install-auth-service.sh` — Install auth-simple as a service
+
+Creates and enables a `dstack-auth` systemd service for the [auth-simple](../kms/auth-simple/) KMS authorization server.
+
+```bash
+sudo ./dstack-vmm-tools/install-auth-service.sh
+sudo systemctl start dstack-auth
+```
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DSTACK_DIR` | `/opt/dstack` | Base directory (auth-simple expected in `$DSTACK_DIR/auth-simple/`) |
+| `AUTH_PORT` | `3001` | Port the auth server listens on |
+
+Expects `index.ts`, `auth-config.json`, and `node_modules/` in `$DSTACK_DIR/auth-simple/`. Requires [bun](https://bun.sh/) installed on the host.
+
+### Useful commands
+
+```bash
+# Check status
+sudo systemctl status dstack-vmm
+sudo systemctl status dstack-auth
+
+# Follow logs
+sudo journalctl -u dstack-vmm -f
+sudo journalctl -u dstack-auth -f
+
+# Restart / Stop
+sudo systemctl restart dstack-vmm
+sudo systemctl stop dstack-auth
+```
