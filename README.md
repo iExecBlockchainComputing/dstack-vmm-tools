@@ -73,12 +73,12 @@ vim .env
 | `.app_env` | Environment secrets injected into the CVM |
 | `.app-compose.json` | App compose manifest sent to dstack-vmm |
 
-### `monitor.sh` — Stream CVM logs
+### `monitor-container.sh` — Stream CVM container logs
 
 Streams logs from a running CVM container via the Gateway:
 
 ```bash
-./dstack-vmm-tools/monitor.sh \
+./dstack-vmm-tools/monitor-container.sh \
   --app-id 4139fa786b4e210cecbb37d62d86552fc659fbc8 \
   --agent-port 8090 \
   --gateway-url apps.ovh-tdx-dev.noxprotocol.dev \
