@@ -41,4 +41,4 @@ WantedBy=multi-user.target
 EOF
 
 systemctl daemon-reload
-systemctl enable ${SERVICE_NAME}
+systemctl enable --now ${SERVICE_NAME} && echo "dstack-vmm.service enabled NOW"
